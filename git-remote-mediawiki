@@ -224,7 +224,8 @@ sub get_mw_tracked_pages {
 	return;
 }
 
-sub get_mw_page_list {
+sub get_mw_page_list { warn "get_mw_page_list: " . join( " ", @{$_[0]} ) . "\n" if ($ENV{DEBUG} || "") eq 'yes';
+
 	my $page_list = shift;
 	my $pages = shift;
 	my @some_pages = @{$page_list};
@@ -308,7 +309,7 @@ sub get_mw_all_pages {
 
 # queries the wiki for a set of pages. Meant to be used within a loop
 # querying the wiki for slices of page list.
-sub get_mw_first_pages {
+sub get_mw_first_pages { warn "get_mw_first_pages: " . join( " ", @{$_[0]} ) . "\n" if ($ENV{DEBUG} || "") eq 'yes';
 	my $some_pages = shift;
 	my @some_pages = @{$some_pages};
 
@@ -367,13 +368,14 @@ sub get_mw_pages {
 			get_all_mediafiles(\%pages);
 		}
 	}
+if ( ($ENV{DEBUG} || "") eq 'yes' ) { use Devel::StackTrace;my $trace = Devel::StackTrace->new;warn $trace->as_string;}
 	print {*STDERR} (scalar keys %pages) . " pages found.\n";
 	return %pages;
 }
 
 # usage: $out = run_git("command args");
 #        $out = run_git("command args", "raw"); # don't interpret output as UTF-8.
-sub run_git {
+sub run_git { warn "run_git: $_[0]\n" if ($ENV{DEBUG} || "") eq 'yes';
 	my $args = shift;
 	my $encoding = (shift || 'encoding(UTF-8)');
 	open(my $git, "-|:${encoding}", "git ${args}")
@@ -553,8 +555,11 @@ sub get_last_global_remote_rev {
 		prop => 'revisions',
 		rclimit => '1',
 		rcdir => 'older',
-	};
+        };
+        if ( ($ENV{DEBUG} || "") eq 'yes' ) { warn "(not yet) returning from " . (caller(0))[3] . "\n" ;}
+
 	my $result = $mediawiki->api($query);
+        if ( ($ENV{DEBUG} || "") eq 'yes' ) { warn "returning from " . (caller(0))[3] . "\n" ;}
 	return $result->{query}->{recentchanges}[0]->{revid};
 }
 
@@ -855,6 +860,7 @@ sub mw_import_ref {
 	if ($fetch_strategy eq 'by_rev') {
 		print {*STDERR} "Fetching & writing export data by revs...\n";
 		$n = mw_import_ref_by_revs($fetch_from);
+if ( ($ENV{DEBUG} || "") eq 'yes' ) { warn "(not yet) returning from " . (caller(0))[3] . "\n" ;}
 	} elsif ($fetch_strategy eq 'by_page') {
 		print {*STDERR} "Fetching & writing export data by pages...\n";
 		$n = mw_import_ref_by_pages($fetch_from);
@@ -893,7 +899,9 @@ sub mw_import_ref_by_revs {
 	my %pages_hash = get_mw_pages();
 
 	my $last_remote = get_last_global_remote_rev();
+if ( ($ENV{DEBUG} || "") eq 'yes' ) { warn "$fetch_from..$last_remote: " . (caller(0))[3] . "\n" ;}
 	my @revision_ids = $fetch_from..$last_remote;
+if ( ($ENV{DEBUG} || "") eq 'yes' ) { warn "returning from " . (caller(0))[3] . "\n" ;}
 	return mw_import_revids($fetch_from, \@revision_ids, \%pages_hash);
 }
 

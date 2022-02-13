@@ -20,10 +20,11 @@ require Exporter;
 
 # Methods which can be called as standalone functions as well:
 @EXPORT_OK = qw(clean_filename smudge_filename connect_maybe
-				EMPTY HTTP_CODE_OK HTTP_CODE_PAGE_NOT_FOUND);
+								EMPTY HTTP_CODE_OK HTTP_CODE_PAGE_NOT_FOUND);
 }
 
-# Mediawiki filenames can contain forward slashes. This variable decides by which pattern they should be replaced
+# Mediawiki filenames can contain forward slashes. This variable decides by
+# which pattern they should be replaced
 use constant SLASH_REPLACEMENT => '%2F';
 
 # Used to test for empty strings
@@ -72,7 +73,8 @@ sub connect_maybe {
 
 	$wiki = MediaWiki::API->new;
 
-	$wiki->{ua}->agent("git-mediawiki/$Git::Mediawiki::VERSION " . $wiki->{ua}->agent());
+	$wiki->{ua}->agent("git-mediawiki/$Git::Mediawiki::VERSION "
+									 . $wiki->{ua}->agent());
 	$wiki->{ua}->conn_cache({total_capacity => undef});
 
 	$wiki->{config}->{api_url} = "${remote_url}/api.php";
@@ -90,7 +92,8 @@ sub connect_maybe {
 			Git::credential(\%credential, 'approve');
 			print {*STDERR} qq(Logged in mediawiki user "$credential{username}".\n);
 		} else {
-			print {*STDERR} qq(Failed to log in mediawiki user "$credential{username}" on ${remote_url}\n);
+			print {*STDERR} qq(Failed to log in mediawiki user )
+				. qq("$credential{username}" on ${remote_url}\n);
 			print {*STDERR} '  (error ' .
 				$wiki->{error}->{code} . ': ' .
 				$wiki->{error}->{details} . ")\n";
