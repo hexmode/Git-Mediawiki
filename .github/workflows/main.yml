@@ -15,7 +15,7 @@ env:
   MW_EXT_PATH: /var/www/html/extensions
   DB_ROOT_USER: root
   DB_ROOT_PWD: database
-  MW_DB_PATH: /var/www/data
+  MW_DB_PATH: /workspace/data
   MW_DB_USER: wiki
   MW_DB_PWD: wiki
   MW_DB_NAME: wiki
@@ -69,6 +69,7 @@ jobs:
     steps:
       - name: MediaWiki Install
         run: >
+          mkdir -p /workspace/data ${{ github.workspace }} &&
           php ${{ env.MW_INSTALL_PATH }}/maintenance/install.php
           --pass=Password123456
           --server="http://${{ env.SERVER_NAME}}"
@@ -82,13 +83,12 @@ jobs:
           --dbpass=${{ env.MW_DB_PWD }}
           --dbpath=${{ env.MW_DB_PATH }}
           test WikiSysop &&
-          echo "error_reporting( -1 ); ini_set( 'display_errors', 1 ); " | tee -a ${{ env.MW_INSTALL_PATH }}/LocalSettings.php
+          mv /workspace/data ${{ github.workspace }}/data
+          mv ${{ env.MW_INSTALL_PATH }}/LocalSettings.php ${{ github.workspace }}
 
       - name: Copy to workspace
         run: |
           mkdir -p ${{ github.workspace }}
-          tar -C ${{ env.MW_INSTALL_PATH }} -c LocalSettings.php | tar -C ${{ github.workspace }} -xv
-          tar -C ${{ env.MW_DB_PATH }}/.. -c data | tar -C ${{ github.workspace }} -xv
           tar -C ${{ github.workspace }} -cvf artifact.tar data LocalSettings.php
 
       - name: Save artifacts
@@ -131,13 +131,8 @@ jobs:
       - name: Extract artifacts
         run: |
           sudo tar -C ${{ github.workspace }} -xvf artifact.tar
-          docker exec -i ${{ job.services.mediawiki.id }} rm -rf ${{ env.MW_DB_PATH }}
-          docker exec -i ${{ job.services.mediawiki.id }} ln -s /workspace/LocalSettings.php ${{ env.MW_INSTALL_PATH }}
-          docker exec -i ${{ job.services.mediawiki.id }} ln -s /workspace/data ${{ env.MW_DATA_PATH }}
+          docker exec -i ${{ job.services.mediawiki.id }} mv /workspace/LocalSettings.php ${{ env.MW_INSTALL_PATH }}
           docker exec -i ${{ job.services.mediawiki.id }} ls -l /workspace ${{ env.MW_DATA_PATH }} ${{ env.MW_INSTALL_PATH }}
-          sudo chown -R www-data:www-data ${{ github.workspace }}/data
-          sudo chmod -R 777 ${{ github.workspace }}/data
-          docker exec -i ${{ job.services.mediawiki.id }} ls -l /workspace/data
 
       - name: Checkout Project
         uses: actions/checkout@v2
