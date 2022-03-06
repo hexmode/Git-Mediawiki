@@ -133,7 +133,7 @@ jobs:
         run: |
           sudo tar -C ${{ github.workspace }} -xvf artifact.tar
           docker exec -i ${{ job.services.mediawiki.id }} mv /workspace/LocalSettings.php ${{ env.MW_INSTALL_PATH }}
-          docker exec -i ${{ job.services.mediawiki.id }} ls -l /workspace ${{ env.MW_DATA_PATH }} ${{ env.MW_INSTALL_PATH }}
+          docker exec -i ${{ job.services.mediawiki.id }} ls -l /workspace ${{ env.MW_DB_PATH }} ${{ env.MW_INSTALL_PATH }}
 
       - name: Checkout Project
         uses: actions/checkout@v2
