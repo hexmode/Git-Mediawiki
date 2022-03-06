@@ -71,12 +71,6 @@ jobs:
           tar -C ${{ env.MW_DB_PATH }} -cvf ${{ matrix.mediawiki_version }}/db.tar .
           cp ${{ env.MW_INSTALL_PATH }}/LocalSettings.php ${{ matrix.mediawiki_version }}/
 
-      - name: Save artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: runtime-${{ matrix.mediawiki_version }}
-          path: ${{ matrix.mediawiki_version }}
-
   test:
     needs: build
     runs-on: ubuntu-latest
@@ -106,14 +100,11 @@ jobs:
           path: ${{ env.PROJECT_NAME }}
           submodules: true
 
-      - name: Load artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: runtime-${{ matrix.mediawiki_version }}
-          path: ${{ matrix.mediawiki_version }}
-
       - name: Deploy artifacts
         run: |
+          ls -ld ${{ env.MW_DB_PATH }}
+          ls -l ${{ env.MW_DB_PATH }}
+          mkdir -p ${{ env.MW_DB_PATH }}
           tar -C ${{ env.MW_DB_PATH }} -xvf ${{ matrix.mediawiki_version }}/db.tar
           cp ${{ matrix.mediawiki_version }}/LocalSettings.php ${{ env.MW_INSTALL_PATH }}/
-          ls -l /
+          ls -l ${{ env.MW_DB_PATH }}
