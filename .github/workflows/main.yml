@@ -83,7 +83,7 @@ jobs:
           --dbuser=${{ env.MW_DB_USER }}
           --dbpass=${{ env.MW_DB_PWD }}
           --dbpath=${{ env.MW_DB_PATH }}
-          test WikiSysop &&
+          test WikiSysop
 
       - name: Copy to workspace
         run: |
