@@ -10,6 +10,23 @@
 
 SHELL=/bin/bash
 
+# Do not modify these! Modify test.config instead
+WIKI_DIR_NAME ?=
+WIKI_ADMIN ?=
+WIKI_PASSW ?=
+SERVER_ADDR ?=
+WIKI_DIR_INST ?=
+PORT ?=
+FILES_FOLDER ?=
+DB_FILE ?=
+DB_PRISTINE ?=
+LIGHTTPD ?=
+PHP_DIR ?=
+LIGHTTPD_DIR ?=
+WEB ?=
+WEB_TMP ?=
+WEB_WWW ?=
+
 include test.config
 
 all: test
@@ -23,7 +40,6 @@ help:
 	@echo 'Run "$(MAKE) clean" to remove trash folders'
 
 test:
-	echo "::notice title=variables::SA: ${SERVER_ADDR} PORT: ${PORT} WDL: ${WIKI_DIR_NAME}"
 	@for t in $(T); do \
 		echo "$$t"; \
 		"./$$t" --verbose || exit 1; \
