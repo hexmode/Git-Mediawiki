@@ -69,8 +69,8 @@ jobs:
     steps:
       - name: MediaWiki Install
         run: >
-          mkdir -p ${{ github.workspace }} &&
-          chmod 1777 ${{ github.workspace }} &&
+          mkdir -p ${{ env.MW_DB_PATH }} &&
+          chmod 1777 ${{ env.MW_DB_PATH }} &&
           php ${{ env.MW_INSTALL_PATH }}/maintenance/install.php
           --pass=Password123456
           --server="http://${{ env.SERVER_NAME}}"
