@@ -10,4 +10,4 @@ PATH="$ROOT_DIR:$PATH"
 
 export GITPERLLIB PATH
 
-exec "${GIT_EXEC_PATH:-/usr/bin/}git" "$@"
+exec git "$@"
