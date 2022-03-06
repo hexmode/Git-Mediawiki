@@ -155,6 +155,8 @@ jobs:
           export PERL5LIB=${{ github.workspace }}/${{ env.PROJECT_NAME }}
           export GIT_EXEC_PATH=${{ github.workspace }}/${{ env.PROJECT_NAME }}/
           export SERVER_ADDR=${{ env.SERVER_NAME }} FILES_FOLDER=${{ env.MW_DB_PATH }}
+          echo $SERVER_ADDR:$PORT/$WIKI_DIR_NAME
+          exit 5
           git clone mediawiki::http://${{ env.SERVER_NAME }} ${{ github.workspace }}/fresh
           echo "::notice title=Sanity check::Cloone of fresh install worked"
           cd ${{ env.PROJECT_NAME }}
