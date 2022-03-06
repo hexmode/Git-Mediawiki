@@ -126,7 +126,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: runtime-${{ matrix.mediawiki_version }}
-          path: ${{ github.workspace }}/artifact.tar
+          path: ${{ github.workspace }}
 
       - name: Extract artifacts
         run: |
