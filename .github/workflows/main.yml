@@ -149,7 +149,7 @@ jobs:
 
       - name: git checkout
         run: |
-          mkdir -p ${{ DB_PRISTINE }}
+          mkdir -p ${{ env.DB_PRISTINE }}
           sudo apt update
           sudo apt install -y libmediawiki-api-perl libdatetime-format-iso8601-perl
           export PERL5LIB=${{ env.PROJECT_NAME }} GIT_EXEC_PATH=${{ env.PROJECT_NAME }} SERVER_ADDR=${{ env.SERVER_NAME }} FILES_FOLDER=${{ env.MW_DB_PATH }}
