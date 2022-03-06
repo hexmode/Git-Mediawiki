@@ -136,6 +136,8 @@ jobs:
           docker exec -i ${{ job.services.mediawiki.id }} ln -s /workspace/data ${{ env.MW_DATA_PATH }}
           echo "::notice title=Links and permissions::Lookie, lookie"
           docker exec -i ${{ job.services.mediawiki.id }} ls -l /workspace ${{ env.MW_DATA_PATH }} ${{ env.MW_INSTALL_PATH }}
+          chmod -R 777 ${{ github.workspace }}/data
+          docker exec -i ${{ job.services.mediawiki.id }} ls -l /workspace/data
 
       - name: Checkout Project
         uses: actions/checkout@v2
