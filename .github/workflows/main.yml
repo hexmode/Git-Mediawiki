@@ -45,8 +45,15 @@ jobs:
 
     container:
       image: mediawiki:${{ matrix.mediawiki_version }}
-      ports:
-        - 80:80
+
+    services:
+      mediawiki:
+        image: mediawiki:${{ matrix.mediawiki_version }}
+        volumes:
+          ${{ env.GITHUB_WORKSPACE }}/${{ matrix.mediawiki_version }}/db:/var/www/data
+          ${{ env.GITHUB_WORKSPACE }}/${{ matrix.mediawiki_version }}/LocalSettings.php:/var/www/html/LocalSettings.php
+        ports:
+          - 80:80
 
     steps:
       - name: MediaWiki Install
@@ -68,9 +75,6 @@ jobs:
       - name: Stage artifacts
         run: |
           curl -vvv http://localhost
-          mkdir -p ${{ matrix.mediawiki_version }}
-          tar -C ${{ env.MW_DB_PATH }} -cvf ${{ matrix.mediawiki_version }}/db.tar .
-          cp ${{ env.MW_INSTALL_PATH }}/LocalSettings.php ${{ matrix.mediawiki_version }}/
 
       - name: Checkout Project
         uses: actions/checkout@v2
