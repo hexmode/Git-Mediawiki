@@ -69,7 +69,7 @@ jobs:
     steps:
       - name: MediaWiki Install
         run: >
-          mkdir -p /workspace/data ${{ github.workspace }} &&
+          mkdir -p ${{ github.workspace }} &&
           php ${{ env.MW_INSTALL_PATH }}/maintenance/install.php
           --pass=Password123456
           --server="http://${{ env.SERVER_NAME}}"
@@ -83,7 +83,6 @@ jobs:
           --dbpass=${{ env.MW_DB_PWD }}
           --dbpath=${{ env.MW_DB_PATH }}
           test WikiSysop &&
-          mv /workspace/data ${{ github.workspace }}/data
           mv ${{ env.MW_INSTALL_PATH }}/LocalSettings.php ${{ github.workspace }}
 
       - name: Copy to workspace
