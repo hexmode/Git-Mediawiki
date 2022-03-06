@@ -89,7 +89,7 @@ jobs:
           tar -C ${{ env.MW_INSTALL_PATH }} -c LocalSettings.php | tar -C ${{ github.workspace }} -xv
           tar -C ${{ env.MW_DB_PATH }}/.. -c data | tar -C ${{ github.workspace }} -xv
           tar -C ${{ github.workspace }} -cvf artifact.tar data LocalSettings.php
-          echo "::notice title=Saved files in artifact.tar
+          echo "::notice title=Saved files in artifact.tar"
 
       - name: Save artifacts
         uses: actions/upload-artifact@v3
@@ -131,7 +131,7 @@ jobs:
       - name: Extract artifacts
         run: |
           tar -C ${{ github.workspace }} -xvf artifact.tar
-          echo "::notice title=Extracted files
+          echo "::notice title=Extracted files"
 
       - name: Checkout Project
         uses: actions/checkout@v2
