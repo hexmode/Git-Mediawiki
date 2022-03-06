@@ -71,9 +71,6 @@ jobs:
     services:
       mediawiki:
         image: mediawiki:${{ matrix.mediawiki_version }}
-        volumes:
-          ${{ env.GITHUB_WORKSPACE }}/${{ matrix.mediawiki_version }}/db:/var/www/data
-          ${{ env.GITHUB_WORKSPACE }}/${{ matrix.mediawiki_version }}/LocalSettings.php:/var/www/html/LocalSettings.php
         ports:
           - 80:80
 
