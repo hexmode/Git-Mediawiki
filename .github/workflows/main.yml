@@ -28,7 +28,7 @@ jobs:
     container:
       image: mediawiki:${{ matrix.mediawiki_version }}
       ports:
-        - 80:8080
+        - 8080:80
 
     strategy:
       matrix:
@@ -66,7 +66,7 @@ jobs:
 
       - name: Stage artifacts
         run: |
-          curl -vvv http://localhost
+          curl -vvv http://localhost:8080
 
       - name: Checkout Project
         uses: actions/checkout@v2
