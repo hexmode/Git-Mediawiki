@@ -99,7 +99,7 @@ jobs:
         image: mediawiki:${{ matrix.mediawiki_version }}
         ports:
           - 80:80
-        options: -v ${{ github.workspace }}/data:${{ env.MW_DB_PATH }} -v ${{ github.workspace }}/LocalSettings.php:${{ env.MW_INSTALL_PATH }}/LocalSettings.php
+        options: -v ${{ github.workspace }}/data:/var/www/data -v ${{ github.workspace }}/LocalSettings.php:/var/www/html/LocalSettings.php
 
     steps:
       - name: Stage artifacts
