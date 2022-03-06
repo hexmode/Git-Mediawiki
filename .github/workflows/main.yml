@@ -89,44 +89,13 @@ jobs:
 
       - name: Stage artifacts
         run: |
+          curl -vvv http://localhost
           mkdir -p ${{ matrix.mediawiki_version }}
           tar -C ${{ env.MW_DB_PATH }} -cvf ${{ matrix.mediawiki_version }}/db.tar .
           cp ${{ env.MW_INSTALL_PATH }}/LocalSettings.php ${{ matrix.mediawiki_version }}/
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-
-    container:
-      image: mediawiki:${{ matrix.mediawiki_version }}
-      ports:
-        - 80:80
-
-    strategy:
-      matrix:
-        include:
-          - mediawiki_version: 1.35
-            database_type: sqlite
-            experimental: false
-          - mediawiki_version: 1.36
-            database_type: sqlite
-            experimental: true
-          - mediawiki_version: 1.37
-            database_type: sqlite
-            experimental: true
-
-    steps:
       - name: Checkout Project
         uses: actions/checkout@v2
         with:
           path: ${{ env.PROJECT_NAME }}
           submodules: true
-
-      - name: Deploy artifacts
-        run: |
-          ls -ld ${{ env.MW_DB_PATH }}
-          ls -l ${{ env.MW_DB_PATH }}
-          mkdir -p ${{ env.MW_DB_PATH }}
-          tar -C ${{ env.MW_DB_PATH }} -xvf ${{ matrix.mediawiki_version }}/db.tar
-          cp ${{ matrix.mediawiki_version }}/LocalSettings.php ${{ env.MW_INSTALL_PATH }}/
-          ls -l ${{ env.MW_DB_PATH }}
