@@ -144,3 +144,4 @@ jobs:
       - name: Working web
         run: |
           curl http://localhost:80
+          docker logs -i ${{ job.services.mediawiki.id }}
