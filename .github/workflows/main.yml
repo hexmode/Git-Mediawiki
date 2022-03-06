@@ -84,7 +84,11 @@ jobs:
           test WikiSysop
 
       - name: docker run
-        run: docker run -d -p 80:80 -v /var/www/html/LocalSettings.php:/var/www/html/LocalSettings.php mediawiki:${{ matrix.mediawiki_version }}
+        run: >
+          docker run -d -p 80:80
+          -v ${{ env.MW_INSTALL_PATH }}/LocalSettings.php:${{ env.MW_INSTALL_PATH }}/LocalSettings.php
+          -v ${{ env.MW_DB_PATH }}:${{ env.MW_DB_PATH }}
+          mediawiki:${{ matrix.mediawiki_version }}
 
       - name: Stage artifacts
         run: |
