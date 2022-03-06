@@ -45,12 +45,8 @@ jobs:
 
     container:
       image: mediawiki:${{ matrix.mediawiki_version }}
-
-    services:
-      mediawiki:
-        image: mediawiki:${{ matrix.mediawiki_version }}
-        ports:
-          - 8080:80
+      ports:
+        - 80
 
     steps:
       - name: MediaWiki Install
@@ -71,7 +67,7 @@ jobs:
 
       - name: Stage artifacts
         run: |
-          curl -vvv http://localhost:8080
+          curl -vvv http://localhost
 
       - name: Checkout Project
         uses: actions/checkout@v2
