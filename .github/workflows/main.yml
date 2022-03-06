@@ -81,7 +81,8 @@ jobs:
           --dbuser=${{ env.MW_DB_USER }}
           --dbpass=${{ env.MW_DB_PWD }}
           --dbpath=${{ env.MW_DB_PATH }}
-          test WikiSysop
+          test WikiSysop &&
+          echo "error_reporting( -1 ); ini_set( 'display_errors', 1 ); " | tee -a ${{ env.MW_INSTALL_PATH }}/LocalSettings.php
 
       - name: Copy to workspace
         run: |
@@ -89,7 +90,6 @@ jobs:
           tar -C ${{ env.MW_INSTALL_PATH }} -c LocalSettings.php | tar -C ${{ github.workspace }} -xv
           tar -C ${{ env.MW_DB_PATH }}/.. -c data | tar -C ${{ github.workspace }} -xv
           tar -C ${{ github.workspace }} -cvf artifact.tar data LocalSettings.php
-          echo "::notice ::this is the message"
 
       - name: Save artifacts
         uses: actions/upload-artifact@v3
@@ -143,5 +143,4 @@ jobs:
 
       - name: Working web
         run: |
-          sleep 5
-          curl -vvv http://localhost:80
+          curl http://localhost:80
