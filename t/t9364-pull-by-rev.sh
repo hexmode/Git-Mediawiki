@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 test_description='Test the Git Mediawiki remote helper: git pull by revision'
 
