@@ -21,6 +21,7 @@ help:
 	@echo 'Run "$(MAKE) clean" to remove trash folders'
 
 test:
+	echo "::notice title=variables::SA: ${SERVER_ADDR} PORT: ${PORT} WDL: ${WIKI_DIR_NAME}"
 	@for t in $(T); do \
 		echo "$$t"; \
 		"./$$t" --verbose || exit 1; \
