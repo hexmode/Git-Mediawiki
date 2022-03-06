@@ -50,7 +50,7 @@ jobs:
     container:
       image: mediawiki:${{ matrix.mediawiki_version }}
       ports:
-        - 80:80
+        - 80:8080
 
     strategy:
       matrix:
@@ -68,17 +68,6 @@ jobs:
     env:
       MW_DB_TYPE: ${{ matrix.database_type }}
       MW_DB_SERVER: ${{ matrix.database_type }}
-
-    services:
-      mediawiki:
-        image: mediawiki:${{ matrix.mediawiki_version }}
-        ports:
-          - 8080:80
-        options: >-
-          --health-cmd /bin/ls
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 2
 
     steps:
       - name: MediaWiki Install
