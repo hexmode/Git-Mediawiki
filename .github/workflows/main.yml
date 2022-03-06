@@ -73,6 +73,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
 
+    strategy:
+      matrix:
+        include:
+          - mediawiki_version: 1.35
+            database_type: sqlite
+            experimental: false
+          - mediawiki_version: 1.36
+            database_type: sqlite
+            experimental: true
+          - mediawiki_version: 1.37
+            database_type: sqlite
+            experimental: true
+
     services:
       mediawiki:
         image: mediawiki:${{ matrix.mediawiki_version }}
