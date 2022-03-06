@@ -90,7 +90,7 @@ jobs:
           tar -C ${{ env.MW_DB_PATH }}/.. -c data | tar -C ${{ github.workspace }} -x
 
       - name: show
-        run: ls -l data LocalSettings.php
+        run: ls -l ${{ github.workspace }}
 
   web-server:
     runs-on: ubuntu-latest
