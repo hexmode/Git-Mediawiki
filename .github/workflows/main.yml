@@ -20,6 +20,8 @@ env:
   MW_DB_PWD: wiki
   MW_DB_NAME: wiki
   DB_PRISTINE: /var/www/pristine.tgz
+  PERL5LIB: ${{ env.PROJECT_NAME }}
+  GIT_EXEC_PATH: ${{ env.PROJECT_NAME }}
   SERVER_NAME: localhost
 
 jobs:
@@ -142,7 +144,6 @@ jobs:
           path: ${{ env.PROJECT_NAME }}
           submodules: true
 
-      - name: Working web
+      - name: git checkout
         run: |
-          curl -vvv http://localhost:80/index.php/Main_Page
-          docker logs ${{ job.services.mediawiki.id }}
+          git clone mediawiki::http://localhost
