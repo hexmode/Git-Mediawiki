@@ -85,6 +85,7 @@ jobs:
 
       - name: Copy to workspace
         run: |
+          mkdir -p ${{ github.workspace }}
           tar -C ${{ env.MW_INSTALL_PATH }} -c LocalSettings.php | tar -C ${{ github.workspace }} -x
           tar -C ${{ env.MW_DB_PATH }}/.. -c data | tar -C ${{ github.workspace }} -x
 
