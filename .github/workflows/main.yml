@@ -20,8 +20,6 @@ env:
   MW_DB_PWD: wiki
   MW_DB_NAME: wiki
   DB_PRISTINE: /var/www/pristine.tgz
-  PERL5LIB: ${{ env.PROJECT_NAME }}
-  GIT_EXEC_PATH: ${{ env.PROJECT_NAME }}
   SERVER_NAME: localhost
 
 jobs:
@@ -146,4 +144,5 @@ jobs:
 
       - name: git checkout
         run: |
-          git clone mediawiki::http://localhost
+          export PERL5LIB=${{ env.PROJECT_NAME }} GIT_EXEC_PATH=${{ env.PROJECT_NAME }}
+          git clone mediawiki::http://${{ env.SERVER_NAME }}
