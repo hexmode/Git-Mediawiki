@@ -131,11 +131,9 @@ jobs:
       - name: Extract artifacts
         run: |
           sudo tar -C ${{ github.workspace }} -xvf artifact.tar
-          echo "::notice ::Extracted files"
-          sudo docker exec -i ${{ job.services.mediawiki.id }} ls
-          echo "::notice ::Sudo docker exec done"
-          docker exec -i ${{ job.services.mediawiki.id }} ls
-          echo "::notice ::Docker exec done"
+          docker exec -i ${{ job.services.mediawiki.id }} rm -rf ${{ env.MW_DB_PATH }}
+          docker exec -i ${{ job.services.mediawiki.id }} ln -s /workspace/LocalSettings.php ${{ env.MW_INSTALL_PATH }}
+          docker exec -i ${{ job.services.mediawiki.id }} ln -s /workspace/data ${{ env.MW_DATA_PATH }}
 
       - name: Checkout Project
         uses: actions/checkout@v2
