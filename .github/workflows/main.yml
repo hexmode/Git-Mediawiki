@@ -89,6 +89,7 @@ jobs:
         run: |
           mkdir -p ${{ github.workspace }}
           mv ${{ env.MW_INSTALL_PATH }}/LocalSettings.php ${{ env.MW_DB_PATH }} ${{ github.workspace }}
+          echo '$wgShowExceptionDetails = true;' | tee -a ${{ github.workspace }}/LocalSettings.php
           tar -C ${{ github.workspace }} -cvf artifact.tar data LocalSettings.php
 
       - name: Save artifacts
