@@ -84,11 +84,11 @@ jobs:
           --dbpass=${{ env.MW_DB_PWD }}
           --dbpath=${{ env.MW_DB_PATH }}
           test WikiSysop &&
-          mv ${{ env.MW_INSTALL_PATH }}/LocalSettings.php ${{ github.workspace }}
 
       - name: Copy to workspace
         run: |
           mkdir -p ${{ github.workspace }}
+          mv ${{ env.MW_INSTALL_PATH }}/LocalSettings.php ${{ env.MW_DB_PATH }} ${{ github.workspace }}
           tar -C ${{ github.workspace }} -cvf artifact.tar data LocalSettings.php
 
       - name: Save artifacts
