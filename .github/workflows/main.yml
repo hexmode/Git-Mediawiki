@@ -89,7 +89,7 @@ jobs:
           tar -C ${{ env.MW_INSTALL_PATH }} -c LocalSettings.php | tar -C ${{ github.workspace }} -xv
           tar -C ${{ env.MW_DB_PATH }}/.. -c data | tar -C ${{ github.workspace }} -xv
           tar -C ${{ github.workspace }} -cvf artifact.tar data LocalSettings.php
-          echo "::notice title=Saved files in artifact.tar::this is the message"
+          echo "::notice ::this is the message"
 
       - name: Save artifacts
         uses: actions/upload-artifact@v3
@@ -119,7 +119,7 @@ jobs:
         image: mediawiki:${{ matrix.mediawiki_version }}
         ports:
           - 80:80
-        options: -v ${{ github.workspace }}/data:/var/www/data -v ${{ github.workspace }}/LocalSettings.php:/var/www/html/LocalSettings.php
+        options: -v ${{ github.workspace }}:/workspace
 
     steps:
       - name: Load artifacts
@@ -131,7 +131,11 @@ jobs:
       - name: Extract artifacts
         run: |
           sudo tar -C ${{ github.workspace }} -xvf artifact.tar
-          echo "::notice title=Extracted files"
+          echo "::notice ::Extracted files"
+          sudo docker exec -i ${{ job.services.mediawiki.id }} ls
+          echo "::notice ::Sudo docker exec done"
+          docker exec -i ${{ job.services.mediawiki.id }} ls
+          echo "::notice ::Docker exec done"
 
       - name: Checkout Project
         uses: actions/checkout@v2
