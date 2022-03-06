@@ -44,7 +44,7 @@ while (<$CONFIG>)
 	s/\s+$//;
 	next unless length;
 	my ($key, $value) = split (/\s*=\s*/,$_, 2);
-	$config{$key} = $value;
+	$config{$key} = $ENV{$key} || $value;
 }
 
 close $CONFIG or die "can't close $configfile: $!";

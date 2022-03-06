@@ -19,8 +19,13 @@ env:
   MW_DB_USER: wiki
   MW_DB_PWD: wiki
   MW_DB_NAME: wiki
-  DB_PRISTINE: /var/www/pristine.tgz
   SERVER_NAME: localhost
+  WIKI_PASSW: Password123456
+  WIKI_ADMIN: WikiSysop
+  WIKI_DIR_NAME:
+  PORT: 80
+  LIGHTTPD: false
+  DB_PRISTINE: ${{ github.workspace }}/pristine
 
 jobs:
   perlcritic:
@@ -72,9 +77,9 @@ jobs:
           mkdir -p ${{ env.MW_DB_PATH }} &&
           chmod 1777 ${{ env.MW_DB_PATH }} &&
           php ${{ env.MW_INSTALL_PATH }}/maintenance/install.php
-          --pass=Password123456
+          --pass=${{ env.WIKI_PASSW }}
           --server="http://${{ env.SERVER_NAME}}"
-          --scriptpath=""
+          --scriptpath="${{ env.WIKI_DIR_NAME }}"
           --dbtype=${{ env.MW_DB_TYPE }}
           --dbserver=${{ env.MW_DB_SERVER }}
           --installdbuser=${{ env.DB_ROOT_USER }}
@@ -83,7 +88,7 @@ jobs:
           --dbuser=${{ env.MW_DB_USER }}
           --dbpass=${{ env.MW_DB_PWD }}
           --dbpath=${{ env.MW_DB_PATH }}
-          test WikiSysop
+          test ${{ env.WIKI_ADMIN }}
 
       - name: Copy to workspace
         run: |
@@ -144,7 +149,11 @@ jobs:
 
       - name: git checkout
         run: |
+          mkdir -p ${{ DB_PRISTINE }}
           sudo apt update
           sudo apt install -y libmediawiki-api-perl libdatetime-format-iso8601-perl
-          export PERL5LIB=${{ env.PROJECT_NAME }} GIT_EXEC_PATH=${{ env.PROJECT_NAME }}
-          git clone mediawiki::http://${{ env.SERVER_NAME }}
+          export PERL5LIB=${{ env.PROJECT_NAME }} GIT_EXEC_PATH=${{ env.PROJECT_NAME }} SERVER_ADDR=${{ env.SERVER_NAME }} FILES_FOLDER=${{ env.MW_DB_PATH }}
+          git clone mediawiki::http://${{ env.SERVER_NAME }} ${{ github.workspace }}/fresh
+          echo "::notice title=Sanity check::Cloone of fresh install worked"
+          cd ${{ env.PROJECT_NAME }}
+          make test
