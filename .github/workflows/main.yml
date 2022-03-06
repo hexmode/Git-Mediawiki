@@ -61,13 +61,25 @@ jobs:
           --dbpath=${{ env.MW_DB_PATH }}
           test WikiSysop
 
-      - name: docker run
-        run: >
-          docker run -d -p 80:80
-          -v ${{ env.MW_INSTALL_PATH }}/LocalSettings.php:${{ env.MW_INSTALL_PATH }}/LocalSettings.php
-          -v ${{ env.MW_DB_PATH }}:${{ env.MW_DB_PATH }}
-          mediawiki:${{ matrix.mediawiki_version }}
+      - name: Copy to workspace
+        run: |
+          tar -C ${{ env.MW_INSTALL_PATH }} -c LocalSettings.php | tar -C ${{ env.GITHUB_WORKSPACE }} -x
+          tar -C ${{ env.MW_DB_PATH }}/.. -c data | tar -C ${{ env.GITHUB_WORKSPACE }} -x
 
+      - name: show
+        run: ls -l data LocalSettings.php
+
+  web-server:
+    runs-on: ubuntu-latest
+
+    services:
+      mediawiki:
+        image: mediawiki:${{ matrix.mediawiki_version }}
+        ports:
+          - 80:80
+        options: -v ${{ env.GITHUB_WORKSPACE }}/data:${{ env.MW_DB_PATH }} ${{ env.GITHUB_WORKSPACE }}/LocalSettings.php:${{ env.MW_INSTALL_PATH }}/LocalSettings.php
+
+    steps:
       - name: Stage artifacts
         run: |
           sleep 5
