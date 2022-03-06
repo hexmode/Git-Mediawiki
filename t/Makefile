@@ -8,6 +8,8 @@
 #
 ## Test git-remote-mediawiki
 
+SHELL=/bin/bash
+
 include test.config
 
 all: test
