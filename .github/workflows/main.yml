@@ -144,5 +144,5 @@ jobs:
 
       - name: Working web
         run: |
-          curl http://localhost:80
+          curl -vvv http://localhost:80/index.php
           docker logs ${{ job.services.mediawiki.id }}
