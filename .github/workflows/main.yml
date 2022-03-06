@@ -88,6 +88,7 @@ jobs:
 
       - name: Stage artifacts
         run: |
+          sleep 5
           curl -vvv http://localhost:8080
 
       - name: Checkout Project
