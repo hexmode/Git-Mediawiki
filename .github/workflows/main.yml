@@ -159,4 +159,4 @@ jobs:
           echo "::notice title=Sanity check::Clone of fresh install worked"
           cd ${{ env.PROJECT_NAME }}
           sed -i "s,SERVER_ADDR=.*,SERVER_ADDR=${SERVER_ADDR},; s,FILES_FOLDER=.*,FILES_FOLDER=${{ github.workspace }}/data,; s,DB_PRISTINE=.*,DB_PRISTINE=${DB_PRISTINE},;" t/test.config
-          make test
+          sudo make test
