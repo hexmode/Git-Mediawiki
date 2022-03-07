@@ -11,21 +11,21 @@
 SHELL=/bin/bash
 
 # Do not modify these! Modify test.config instead
-WIKI_DIR_NAME ?=
-WIKI_ADMIN ?=
-WIKI_PASSW ?=
-SERVER_ADDR ?=
-WIKI_DIR_INST ?=
-PORT ?=
-FILES_FOLDER ?=
-DB_FILE ?=
-DB_PRISTINE ?=
-LIGHTTPD ?=
-PHP_DIR ?=
-LIGHTTPD_DIR ?=
-WEB ?=
-WEB_TMP ?=
-WEB_WWW ?=
+export WIKI_DIR_NAME ?=
+export WIKI_ADMIN ?=
+export WIKI_PASSW ?=
+export SERVER_ADDR ?=
+export WIKI_DIR_INST ?=
+export PORT ?=
+export FILES_FOLDER ?=
+export DB_FILE ?=
+export DB_PRISTINE ?=
+export LIGHTTPD ?=
+export PHP_DIR ?=
+export LIGHTTPD_DIR ?=
+export WEB ?=
+export WEB_TMP ?=
+export WEB_WWW ?=
 
 include test.config
 
