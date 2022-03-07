@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -x
 
 # git executable wrapper script for Git-Mediawiki to run tests without
 # installing all the scripts and perl packages.
