@@ -1,4 +1,4 @@
 #!/bin/bash -x
 
 
-exec git "$@"
+exec /usr/bin/git $@
