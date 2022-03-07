@@ -158,5 +158,5 @@ jobs:
           git clone mediawiki::http://${{ env.SERVER_NAME }} ${{ github.workspace }}/fresh
           echo "::notice title=Sanity check::Clone of fresh install worked"
           cd ${{ env.PROJECT_NAME }}
-          sed -i "s/SERVER_ADDR=.*/SERVER_ADDR=${SERVER_ADDR}/; s/FILES_FOLDER=.*/FILES_FOLDER=${MW_DB_PATH}/; s/DB_PRISTINE=.*/DB_PRISTINE=${DB_PRISTINE}/;" t/test.config
+          sed -i "s/SERVER_ADDR=.*/SERVER_ADDR=${{ env.SERVER_NAME }}/; s/FILES_FOLDER=.*/FILES_FOLDER=${{ env.MW_DB_PATH }}/; s/DB_PRISTINE=.*/DB_PRISTINE=${{ env.DB_PRISTINE }}/;" t/test.config
           make test
