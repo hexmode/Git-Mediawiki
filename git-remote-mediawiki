@@ -906,8 +906,11 @@ sub mw_import_ref_by_revs {
 	my $fetch_from = shift;
 	my %pages_hash = get_mw_pages();
 
+	my @revision_ids = ();
 	my $last_remote = get_last_global_remote_rev();
-	my @revision_ids = $fetch_from..$last_remote;
+	if ( $last_remote ) {
+		@revision_ids = $fetch_from..$last_remote;
+	}
 	return mw_import_revids($fetch_from, \@revision_ids, \%pages_hash);
 }
 
