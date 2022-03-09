@@ -22,9 +22,11 @@
 #     "edit_page"
 #     "getallpagename"
 
+use strict;
+use warnings;
+
 use MediaWiki::API;
 use Getopt::Long;
-use encoding 'utf8';
 use DateTime::Format::ISO8601;
 use open ':encoding(utf8)';
 use constant SLASH_REPLACEMENT => "%2F";
@@ -42,10 +44,9 @@ while (<$CONFIG>)
 	s/\s+$//;
 	next unless length;
 	my ($key, $value) = split (/\s*=\s*/,$_, 2);
-	$config{$key} = $value;
-	last if ($key eq 'LIGHTTPD' and $value eq 'false');
-	last if ($key eq 'PORT');
+	$config{$key} = $ENV{$key} || $value;
 }
+
 close $CONFIG or die "can't close $configfile: $!";
 
 my $wiki_address = "http://$config{'SERVER_ADDR'}".":"."$config{'PORT'}";
@@ -61,7 +62,8 @@ $mw->{config}->{api_url} = $wiki_url;
 # Logs the user with <name> and <password> in the global variable
 # of the mediawiki $mw
 sub wiki_login {
-	$mw->login( { lgname => "$_[0]",lgpassword => "$_[1]" } )
+	my ($user, $pass) = @_;
+	$mw->login( { lgname => $user,lgpassword => $pass } )
 	|| die "getpage: login failed";
 }
 
@@ -87,7 +89,7 @@ sub wiki_getpage {
 	# Replace spaces by underscore in the page name
 	$pagename =~ s/ /_/g;
 	$pagename =~ s/\//%2F/g;
-	open(my $file, ">$destdir/$pagename.mw");
+	open(my $file, q{>}, "$destdir/$pagename.mw");
 	print $file "$content";
 	close ($file);
 
@@ -172,7 +174,7 @@ sub wiki_getallpagename {
 				cmlimit => 500 },
 		)
 		|| die $mw->{error}->{code}.": ".$mw->{error}->{details};
-		open(my $file, ">all.txt");
+		open(my $file, q{>}, "all.txt");
 		foreach my $page (@{$mw_pages}) {
 			print $file "$page->{title}\n";
 		}
@@ -185,7 +187,7 @@ sub wiki_getallpagename {
 				aplimit => 500,
 			})
 		|| die $mw->{error}->{code}.": ".$mw->{error}->{details};
-		open(my $file, ">all.txt");
+		open(my $file, q{>}, "all.txt");
 		foreach my $page (@{$mw_pages}) {
 			print $file "$page->{title}\n";
 		}

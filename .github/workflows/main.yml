@@ -1,0 +1,162 @@
+---
+name: build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+env:
+  PROJECT_NAME: Git-Mediawiki
+  COMPOSER_VERSION: 2.1.14
+  MW_INSTALL_PATH: /var/www/html
+  MW_EXT_PATH: /var/www/html/extensions
+  DB_ROOT_USER: root
+  DB_ROOT_PWD: database
+  MW_DB_PATH: /workspace/data
+  MW_DB_USER: wiki
+  MW_DB_PWD: wiki
+  MW_DB_NAME: wiki
+  SERVER_NAME: localhost
+  WIKI_PASSW: Password123456
+  WIKI_ADMIN: WikiSysop
+  WIKI_DIR_NAME:
+  PORT: 80
+  LIGHTTPD: false
+  DB_PRISTINE: ${{ github.workspace }}/pristine
+
+jobs:
+  perlcritic:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Perl critic
+        uses: Difegue/action-perlcritic@master
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          args: --stern ./Git/* ./t/*.pl ./git-*
+
+  editorconfig:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Editorconfig
+        uses: zbeekman/EditorConfig-Action@master
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  build:
+    runs-on: ubuntu-latest
+    container: mediawiki:${{ matrix.mediawiki_version }}
+
+    strategy:
+      matrix:
+        include:
+          - mediawiki_version: 1.35
+            database_type: sqlite
+            experimental: false
+          - mediawiki_version: 1.36
+            database_type: sqlite
+            experimental: true
+          - mediawiki_version: 1.37
+            database_type: sqlite
+            experimental: true
+
+    env:
+      MW_DB_TYPE: ${{ matrix.database_type }}
+      MW_DB_SERVER: ${{ matrix.database_type }}
+
+    steps:
+      - name: MediaWiki Install
+        run: >
+          mkdir -p ${{ env.MW_DB_PATH }} &&
+          chmod 1777 ${{ env.MW_DB_PATH }} &&
+          php ${{ env.MW_INSTALL_PATH }}/maintenance/install.php
+          --pass=${{ env.WIKI_PASSW }}
+          --server="http://${{ env.SERVER_NAME}}"
+          --scriptpath="${{ env.WIKI_DIR_NAME }}"
+          --dbtype=${{ env.MW_DB_TYPE }}
+          --dbserver=${{ env.MW_DB_SERVER }}
+          --installdbuser=${{ env.DB_ROOT_USER }}
+          --installdbpass=${{ env.DB_ROOT_PWD }}
+          --dbname=${{ env.MW_DB_NAME }}
+          --dbuser=${{ env.MW_DB_USER }}
+          --dbpass=${{ env.MW_DB_PWD }}
+          --dbpath=${{ env.MW_DB_PATH }}
+          test ${{ env.WIKI_ADMIN }}
+
+      - name: Copy to workspace
+        run: |
+          mkdir -p ${{ github.workspace }}
+          mv ${{ env.MW_INSTALL_PATH }}/LocalSettings.php ${{ env.MW_DB_PATH }} ${{ github.workspace }}
+          echo '$wgShowExceptionDetails = true;' | tee -a ${{ github.workspace }}/LocalSettings.php
+          chmod -R a+rwx ${{ github.workspace }}/data
+          tar -C ${{ github.workspace }} -cvf artifact.tar data LocalSettings.php
+
+      - name: Save artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: runtime-${{ matrix.mediawiki_version }}
+          path: ${{ github.workspace }}/artifact.tar
+
+  web-server:
+    runs-on: ubuntu-latest
+    needs: build
+
+    strategy:
+      matrix:
+        include:
+          - mediawiki_version: 1.35
+            database_type: sqlite
+            experimental: false
+          - mediawiki_version: 1.36
+            database_type: sqlite
+            experimental: true
+          - mediawiki_version: 1.37
+            database_type: sqlite
+            experimental: true
+
+    services:
+      mediawiki:
+        image: mediawiki:${{ matrix.mediawiki_version }}
+        ports:
+          - 80:80
+        options: -v ${{ github.workspace }}:/workspace
+
+    steps:
+      - name: Load artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: runtime-${{ matrix.mediawiki_version }}
+          path: ${{ github.workspace }}
+
+      - name: Extract artifacts
+        run: |
+          sudo tar -C ${{ github.workspace }} -xvf artifact.tar
+          docker exec -i ${{ job.services.mediawiki.id }} mv /workspace/LocalSettings.php ${{ env.MW_INSTALL_PATH }}
+          docker exec -i ${{ job.services.mediawiki.id }} ls -l /workspace ${{ env.MW_DB_PATH }} ${{ env.MW_INSTALL_PATH }}
+
+      - name: Checkout Project
+        uses: actions/checkout@v2
+        with:
+          path: ${{ env.PROJECT_NAME }}
+          submodules: true
+
+      - name: git checkout
+        run: |
+          mkdir -p ${{ env.DB_PRISTINE }}
+          sudo apt update
+          sudo apt install -y libmediawiki-api-perl libdatetime-format-iso8601-perl
+          export PERL5LIB=${{ github.workspace }}/${{ env.PROJECT_NAME }}
+          export GIT_EXEC_PATH=${{ github.workspace }}/${{ env.PROJECT_NAME }}/
+          export SERVER_ADDR=${{ env.SERVER_NAME }} FILES_FOLDER=${{ env.MW_DB_PATH }}
+          git clone mediawiki::http://${{ env.SERVER_NAME }} ${{ github.workspace }}/fresh
+          echo "::notice title=Sanity check::Clone of fresh install worked"
+          cd ${{ env.PROJECT_NAME }}
+          sed -i "s,SERVER_ADDR=.*,SERVER_ADDR=${SERVER_ADDR},; s,FILES_FOLDER=.*,FILES_FOLDER=${{ github.workspace }}/data,; s,DB_PRISTINE=.*,DB_PRISTINE=${DB_PRISTINE},; s,WIKI_ADMIN=.*,WIKI_ADMIN=${WIKI_ADMIN},; s,WIKI_PASSW=.*,WIKI_PASSW=${WIKI_PASSW},;" t/test.config
+          sudo make test
