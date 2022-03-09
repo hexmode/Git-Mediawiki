@@ -175,7 +175,7 @@ test_expect_success 'setup a repository with media files' '
 
 test_expect_success 'git clone works with one specific page cloned and mediaimport=true' '
 	git clone -c remote.origin.pages=testpage \
-		  -c remote.origin.mediaimport=true \
+			-c remote.origin.mediaimport=true \
 			mediawiki::'"$WIKI_URL"' mw_dir_15 &&
 	test_when_finished "rm -rf mw_dir_15" &&
 	test_contains_N_files mw_dir_15 3 &&
