@@ -46,8 +46,9 @@ $mw->{config}->{api_url} = $wiki_url;
 # Logs the user with <name> and <password> in the global variable
 # of the mediawiki $mw
 sub wiki_login {
-	$mw->login( { lgname => "$_[0]",lgpassword => "$_[1]" } )
-	|| die "getpage: login failed";
+	my ( $user, $pass ) = @_;
+	return $mw->login( { lgname => $user, lgpassword => $pass } )
+		|| die "getpage: login failed";
 }
 
 # wiki_getpage <wiki_page> <dest_path>
@@ -55,8 +56,7 @@ sub wiki_login {
 # fetch a page <wiki_page> from the wiki referenced in the global variable
 # $mw and copies its content in directory dest_path
 sub wiki_getpage {
-	my $pagename = $_[0];
-	my $destdir = $_[1];
+	my ( $pagename, $destdir ) = @_;
 
 	my $page = $mw->get_page( { title => $pagename } );
 	if (!defined($page)) {
@@ -68,14 +68,16 @@ sub wiki_getpage {
 		die "getpage: page does not exist";
 	}
 
-	$pagename=$page->{'title'};
+	$pagename = $page->{'title'};
 	# Replace spaces by underscore in the page name
-	$pagename =~ s/ /_/g;
-	$pagename =~ s/\//%2F/g;
+	for ( $pagename ) {
+		s/ /_/g;
+		s/\//%2F/g;
+	}
 	open(my $file, q{>}, "$destdir/$pagename.mw");
 	print $file "$content";
 	close ($file);
-
+	return;
 }
 
 # wiki_delete_page <page_name>
@@ -83,17 +85,17 @@ sub wiki_getpage {
 # delete the page with name <page_name> from the wiki referenced
 # in the global variable $mw
 sub wiki_delete_page {
-	my $pagename = $_[0];
+	my ( $pagename ) = @_;
 
-	my $exist=$mw->get_page({title => $pagename});
+	my $exist = $mw->get_page({title => $pagename});
 
 	if (defined($exist->{'*'})){
-		$mw->edit({ action => 'delete',
-				title => $pagename})
-		|| die $mw->{error}->{code} . ": " . $mw->{error}->{details};
+		$mw->edit({ action => 'delete', title => $pagename})
+			|| die $mw->{error}->{code} . ": " . $mw->{error}->{details};
 	} else {
 		die "no page with such name found: $pagename\n";
 	}
+	return;
 }
 
 # wiki_editpage <wiki_page> <wiki_content> <wiki_append> [-c=<category>] [-s=<summary>]

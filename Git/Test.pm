@@ -8,6 +8,7 @@ sub new {
 	my $self = bless {}, $class;
 
 	$self->readFile( $configFile );
+	return $self;
 }
 
 sub readFile {
@@ -18,6 +19,8 @@ sub readFile {
 	$self->readFH( $fh );
 	close $fh
 		or die "Can't close $file: $!\n";
+
+	return $self;
 }
 
 sub readFH {
@@ -34,6 +37,8 @@ sub readFH {
 		last if ($key eq 'LIGHTTPD' and $value eq 'false');
 		last if ($key eq 'PORT');
 	}
+
+	return $self;
 }
 
 sub getWikiAddr {
