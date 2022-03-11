@@ -32,7 +32,7 @@ use DateTime::Format::ISO8601;
 use open ':encoding(utf8)';
 use constant SLASH_REPLACEMENT => "%2F";
 
-my $config = new Git::Test( "$ENV{'CURR_DIR'}/test.config" );
+my $config = Git::Test->new( "$ENV{'CURR_DIR'}/test.config" );
 my $wiki_address = $config->getWikiAddr();
 my $wiki_url = $config->getWikiUrl();
 my $wiki_admin = $config->getWikiAdmin();
