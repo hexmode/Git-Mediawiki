@@ -9,12 +9,10 @@
 #
 # License: GPL v2 or later
 
-
 test_description='Test the Git Mediawiki remote helper: git clone'
 
 . ./test-gitmw-lib.sh
 . ./sharness/sharness.sh
-
 
 test_check_precond
 
