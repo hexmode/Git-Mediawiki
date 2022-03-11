@@ -106,9 +106,7 @@ sub wiki_delete_page {
 # content of the page <wiki_page>
 # If <wik_page> doesn't exist, that page is created with the <wiki_content>
 sub wiki_editpage {
-	my $wiki_page = $_[0];
-	my $wiki_content = $_[1];
-	my $wiki_append = $_[2];
+	my ( $wiki_page, $wiki_content, $wiki_append ) = @_;
 	my $summary = "";
 	my ($summ, $cat) = ();
 	GetOptions('s=s' => \$summ, 'c=s' => \$cat);
@@ -139,7 +137,7 @@ sub wiki_editpage {
 		$summary=$summ;
 	}
 
-	$mw->edit( { action => 'edit', title => $wiki_page, summary => $summary, text => "$text"} );
+	return $mw->edit( { action => 'edit', title => $wiki_page, summary => $summary, text => "$text"} );
 }
 
 # wiki_getallpagename [<category>]
@@ -150,15 +148,18 @@ sub wiki_editpage {
 # If the argument <category> is defined, then this function get only the pages
 # belonging to <category>.
 sub wiki_getallpagename {
+	my $category = @_;
+
 	# fetch the pages of the wiki
-	if (defined($_[0])) {
-		my $mw_pages = $mw->list ( { action => 'query',
-				list => 'categorymembers',
-				cmtitle => "Category:$_[0]",
-				cmnamespace => 0,
-				cmlimit => 500 },
-		)
-		|| die $mw->{error}->{code}.": ".$mw->{error}->{details};
+	if (defined( $category )) {
+		my $mw_pages = $mw->list ( {
+			action => 'query',
+			list => 'categorymembers',
+			cmtitle => "Category:$category",
+			cmnamespace => 0,
+			cmlimit => 500
+		} )
+			|| die $mw->{error}->{code}.": ".$mw->{error}->{details};
 		open(my $file, q{>}, "all.txt");
 		foreach my $page (@{$mw_pages}) {
 			print $file "$page->{title}\n";
@@ -181,7 +182,7 @@ sub wiki_getallpagename {
 }
 
 sub wiki_upload_file {
-	my $file_name = $_[0];
+	my ( $file_name ) = @_;
 	my $resultat = $mw->edit ( {
 		action => 'upload',
 		filename => $file_name,
