@@ -10,7 +10,7 @@ use warnings;
 
 BEGIN {
 
-	our ($VERSION, @ISA, @EXPORT, @EXPORT_OK);
+	our ($VERSION, @ISA, @EXPORT_OK);
 
 	# Totally unstable API.
 	$VERSION = '0.01';

@@ -26,34 +26,17 @@ use strict;
 use warnings;
 
 use MediaWiki::API;
+use Git::Test;
 use Getopt::Long;
 use DateTime::Format::ISO8601;
 use open ':encoding(utf8)';
 use constant SLASH_REPLACEMENT => "%2F";
 
-#Parsing of the config file
-
-my $configfile = "$ENV{'CURR_DIR'}/test.config";
-my %config;
-open my $CONFIG, "<",  $configfile or die "can't open $configfile: $!";
-while (<$CONFIG>)
-{
-	chomp;
-	s/#.*//;
-	s/^\s+//;
-	s/\s+$//;
-	next unless length;
-	my ($key, $value) = split (/\s*=\s*/,$_, 2);
-	$config{$key} = $value;
-	last if ($key eq 'LIGHTTPD' and $value eq 'false');
-	last if ($key eq 'PORT');
-}
-close $CONFIG or die "can't close $configfile: $!";
-
-my $wiki_address = "http://$config{'SERVER_ADDR'}".":"."$config{'PORT'}";
-my $wiki_url = "$wiki_address/$config{'WIKI_DIR_NAME'}/api.php";
-my $wiki_admin = "$config{'WIKI_ADMIN'}";
-my $wiki_admin_pass = "$config{'WIKI_PASSW'}";
+my $config = new Git::Test( "$ENV{'CURR_DIR'}/test.config" );
+my $wiki_address = $config->getWikiAddr();
+my $wiki_url = $config->getWikiUrl();
+my $wiki_admin = $config->getWikiAdmin();
+my $wiki_admin_pass = $config->getWikiAdminPass();
 my $mw = MediaWiki::API->new;
 $mw->{config}->{api_url} = $wiki_url;
 
