@@ -54,7 +54,7 @@ test_push_pull () {
 5
 " >Foo.mw &&
 			git commit -am "conflicting change on foo" &&
-			git pull &&
+			git pull --rebase &&
 			git push
 		)
 	'
