@@ -32,7 +32,7 @@ test_expect_success 'Git clone creates the expected git log with one file' '
 '
 
 
-test_expect_failure 'Git clone creates the expected git log with multiple files' '
+test_expect_success 'Git clone creates the expected git log with multiple files' '
 	wiki_reset &&
 	wiki_editpage daddy "this is not important" false -s="this must be the same" &&
 	wiki_editpage daddy "neither is this" true -s="this must also be the same" &&
