@@ -11,6 +11,7 @@
 SHELL=/bin/bash
 
 include test.config
+currentDir=$(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
 all: test
 
@@ -25,7 +26,7 @@ help:
 test:
 	@for t in $(T); do \
 		echo "$$t"; \
-		"./$$t" ${TEST_FLAG} || exit 1; \
+		PERL5LIB=${currentDir}/..:$$PERL5LIB "./$$t" ${TEST_FLAG} || exit 1; \
 	done
 
 clean:
