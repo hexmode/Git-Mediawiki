@@ -64,7 +64,8 @@ $mw->{config}->{api_url} = $wiki_url;
 sub wiki_login {
 	my ($user, $pass) = @_;
 	$mw->login( { lgname => $user,lgpassword => $pass } )
-	|| die "getpage: login failed";
+		|| die sprintf "wiki_login: failed: (%s) %s\n",
+		$mw->{error}->{code}, $mw->{error}->{details};
 }
 
 # wiki_getpage <wiki_page> <dest_path>

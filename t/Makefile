@@ -14,7 +14,7 @@ include test.config
 
 all: test
 
-T = $(wildcard t[0-9][0-9][0-9][0-9]-*.sh)
+T ?= $(wildcard t[0-9][0-9][0-9][0-9]-*.sh)
 
 .PHONY: help test clean all install-wiki
 
@@ -25,7 +25,7 @@ help:
 test:
 	@for t in $(T); do \
 		echo "$$t"; \
-		"./$$t" --verbose || exit 1; \
+		"./$$t" ${TEST_FLAG} || exit 1; \
 	done
 
 clean:

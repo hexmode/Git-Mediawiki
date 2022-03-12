@@ -458,9 +458,14 @@ wiki_install () {
 
 # Reset the database of the wiki and the password of the admin
 wiki_reset () {
+	test -d "$DB_PRISTINE" || (
+		mkdir -p "$DB_PRISTINE" &&
+			tar -C "$FILES_FOLDER" -c . | tar -C "$DB_PRISTINE" -x
+	)
 	# Copy initial database of the wiki
 	( tar -C "$DB_PRISTINE" -c . | tar -C "$FILES_FOLDER" -x ) ||
 		error "Can't copy from $DB_PRISTINE to $FILES_FOLDER"
+	chmod -R a+w "$FILES_FOLDER"
 	echo "File $FILES_FOLDER/$DB_FILE is set."
 }
 
