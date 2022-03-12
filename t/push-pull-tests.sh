@@ -122,9 +122,11 @@ test_push_pull () {
 4" >Foo.mw &&
 			git add Foo.mw &&
 			git commit -m "conflict created" &&
-			test_must_fail git pull &&
+			test_must_fail git pull --rebase &&
 			perl -pi -e "s/[<=>].*//g" Foo.mw &&
+			git add Foo.mw &&
 			git commit -am "merge conflict solved" &&
+			git rebase --continue &&
 			git push
 		)
 	'
