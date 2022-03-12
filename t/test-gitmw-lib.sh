@@ -13,8 +13,6 @@
 
 . ./test.config
 
-echo "::notice title=variables::SA: $SERVER_ADDR PORT: $PORT WDL: $WIKI_DIR_NAME"
-
 WIKI_URL=http://"$SERVER_ADDR:$PORT/$WIKI_DIR_NAME"
 CURR_DIR=$(pwd)
 TEST_OUTPUT_DIRECTORY=$(pwd)

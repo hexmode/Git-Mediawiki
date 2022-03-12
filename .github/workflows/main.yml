@@ -156,7 +156,6 @@ jobs:
           export GIT_EXEC_PATH=${{ github.workspace }}/${{ env.PROJECT_NAME }}/
           export SERVER_ADDR=${{ env.SERVER_NAME }} FILES_FOLDER=${{ env.MW_DB_PATH }}
           git clone mediawiki::http://${{ env.SERVER_NAME }} ${{ github.workspace }}/fresh
-          echo "::notice title=Sanity check::Clone of fresh install worked"
           cd ${{ env.PROJECT_NAME }}
           sed -i "s,SERVER_ADDR=.*,SERVER_ADDR=${SERVER_ADDR},; s,FILES_FOLDER=.*,FILES_FOLDER=${{ github.workspace }}/data,; s,DB_PRISTINE=.*,DB_PRISTINE=${DB_PRISTINE},; s,WIKI_ADMIN=.*,WIKI_ADMIN=${WIKI_ADMIN},; s,WIKI_PASSW=.*,WIKI_PASSW=${WIKI_PASSW},;" t/test.config
           sudo make test
