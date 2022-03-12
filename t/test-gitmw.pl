@@ -150,7 +150,7 @@ sub wiki_editpage {
 # If the argument <category> is defined, then this function get only the pages
 # belonging to <category>.
 sub wiki_getallpagename {
-	my $category = @_;
+	my ( $category ) = @_;
 
 	# fetch the pages of the wiki
 	if (defined( $category )) {
