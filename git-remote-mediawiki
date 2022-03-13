@@ -822,7 +822,7 @@ sub get_more_refs {
 	my $cmd = shift;
 	my @refs;
 	while (1) {
-		my $line = <STDIN>;					## no critic (see above)
+		my $line = <STDIN>;					## no critic
 		if ($line =~ /^$cmd (.*)$/) {
 			push(@refs, $1);
 		} elsif ($line eq "\n") {
