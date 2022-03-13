@@ -48,7 +48,7 @@ $mw->{config}->{api_url} = $wiki_url;
 # of the mediawiki $mw
 sub wiki_login {
 	my ($user, $pass) = @_;
-	$mw->login( { lgname => $user,lgpassword => $pass } )
+	return $mw->login( { lgname => $user,lgpassword => $pass } )
 		|| die sprintf "wiki_login: failed: (%s) %s\n",
 		$mw->{error}->{code}, $mw->{error}->{details};
 }
@@ -181,6 +181,8 @@ sub wiki_getallpagename {
 		}
 		close ($file);
 	}
+
+	return;
 }
 
 sub wiki_upload_file {
@@ -194,6 +196,8 @@ sub wiki_upload_file {
 	}, {
 		skip_encoding => 1
 	} ) || die $mw->{error}->{code} . ' : ' . $mw->{error}->{details};
+
+	return;
 }
 
 # Main part of this script: parse the command line arguments

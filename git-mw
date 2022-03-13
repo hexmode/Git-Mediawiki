@@ -28,8 +28,9 @@ binmode STDOUT, ':encoding(UTF-8)';
 # Global parameters
 my $verbose = 0;
 sub v_print {
+	my @arg = @_;
 	if ($verbose) {
-		return print {*STDERR} @_;
+		return print {*STDERR} @arg;
 	}
 	return;
 }

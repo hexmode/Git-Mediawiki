@@ -151,15 +151,15 @@ $wiki_name =~ s{[^/]*://}{};
 $wiki_name =~ s/^.*@//;
 
 # Commands parser
-while (<STDIN>) {
+while (<>) {
 	chomp;
 
 	if (!parse_command($_)) {
 		last;
 	}
 
-	BEGIN { $| = 1 } # flush STDOUT, to make sure the previous
-			 # command is fully processed.
+	# flush STDOUT, to make sure the previous command is fully processed.
+	do { local $| = 1 }
 }
 
 ########################## Functions ##############################
@@ -818,7 +818,7 @@ sub get_more_refs {
 	my $cmd = shift;
 	my @refs;
 	while (1) {
-		my $line = <STDIN>;
+		my $line = <>;
 		if ($line =~ /^$cmd (.*)$/) {
 			push(@refs, $1);
 		} elsif ($line eq "\n") {
