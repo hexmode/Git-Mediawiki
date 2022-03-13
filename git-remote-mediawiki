@@ -151,7 +151,11 @@ $wiki_name =~ s{[^/]*://}{};
 $wiki_name =~ s/^.*@//;
 
 # Commands parser
-while (<>) {
+
+# Yes, despite perlcritic saying "[<ARGV>] is almost always what you want if you want to create a
+# program that reads from STDIN", we don't want that here since we have args that look like file
+# names and we're talking directly to git.
+while (<STDIN>) {								## no critic
 	chomp;
 
 	if (!parse_command($_)) {
@@ -818,7 +822,7 @@ sub get_more_refs {
 	my $cmd = shift;
 	my @refs;
 	while (1) {
-		my $line = <>;
+		my $line = <STDIN>;					## no critic (see above)
 		if ($line =~ /^$cmd (.*)$/) {
 			push(@refs, $1);
 		} elsif ($line eq "\n") {

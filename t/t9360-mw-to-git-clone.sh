@@ -19,7 +19,7 @@ test_check_precond
 
 test_expect_success 'Git clone creates the expected git log with one file' '
 	wiki_reset &&
-	wiki_editpage foo "this is not important" false -c cat -s "this must be the same" &&
+	wiki_editpage foo "this is not important" false -c=cat -s="this must be the same" &&
 	git clone mediawiki::'"$WIKI_URL"' mw_dir_1 &&
 	(
 		cd mw_dir_1 &&
