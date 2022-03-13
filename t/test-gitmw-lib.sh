@@ -458,7 +458,7 @@ ensure_pristine() {
 	test -d "$DB_PRISTINE" || (
 		echo "First time pristine copy"
 		mkdir -p $DB_PRISTINE;
-		sudo tar -C "$FILES_FOLDER/data" -c . | sudo tar -C "$DB_PRISTINE" -x
+		sudo tar -C "$FILES_FOLDER" -c . | sudo tar -C "$DB_PRISTINE" -x
 	)
 }
 
@@ -466,9 +466,9 @@ ensure_pristine() {
 wiki_reset () {
 	ensure_pristine
 	# Copy initial database of the wiki
-	( tar -C "$DB_PRISTINE" -c . | sudo tar -C "$FILES_FOLDER/data" -x ) ||
+	( tar -C "$DB_PRISTINE" -c . | sudo tar -C "$FILES_FOLDER" -x ) ||
 		error "Can't copy from $DB_PRISTINE to $FILES_FOLDER"
-	chmod -R a+w "$FILES_FOLDER/data"
+	chmod -R a+w "$FILES_FOLDER"
 	echo "File $FILES_FOLDER/$DB_FILE is set."
 }
 
