@@ -17,7 +17,7 @@ env:
   MW_DB_USER: wiki
   MW_DB_PWD: wiki
   MW_DB_NAME: wiki
-  SERVER_NAME: mediawiki
+  SERVER_NAME: localhost
   WIKI_PASSW: Password123456
   WIKI_ADMIN: WikiSysop
   WIKI_DIR_NAME:
